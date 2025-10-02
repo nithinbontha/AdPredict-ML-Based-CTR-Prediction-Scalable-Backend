@@ -1,0 +1,30 @@
+from fastapi import FastAPI, HTTPException
+import pandas as pd
+import pickle
+from utils.features import make_features
+from functools import lru_cache
+
+app = FastAPI()
+
+# Load model
+MODEL_PATH = "../model/ctr_model.pkl"
+model = pickle.load(open(MODEL_PATH, "rb"))
+
+# Simple LRU cache for repeated queries
+@lru_cache(maxsize=10000)
+def cached_predict(feature_tuple):
+    # feature_tuple is a tuple of inputs
+    # convert to DataFrame or vector
+    df = pd.DataFrame([feature_tuple], columns=["f1", "f2", "f3", ...])
+    return model.predict_proba(df)[:, 1][0]
+
+@app.post("/predict")
+def predict(request: dict):
+    # request contains features
+    try:
+        feat = make_features(request)
+        feat_tuple = tuple(feat[col] for col in sorted(feat.keys()))
+        prob = cached_predict(feat_tuple)
+        return {"ctr": float(prob)}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
