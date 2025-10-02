@@ -1,0 +1,31 @@
+import pandas as pd
+from sklearn.linear_model import LogisticRegression
+from sklearn.preprocessing import OneHotEncoder
+from sklearn.pipeline import Pipeline
+from sklearn.compose import ColumnTransformer
+import pickle
+
+df = pd.read_csv("data/click_data.csv")
+
+X = df.drop(columns=["label"])
+y = df["label"]
+
+categorical_cols = ["ad_category", "device_type", "ad_slot"]
+numerical_cols = ["user_age"]
+
+preprocessor = ColumnTransformer([
+    ('cat', OneHotEncoder(), categorical_cols),
+], remainder='passthrough')
+
+clf = Pipeline(steps=[
+    ('preprocessor', preprocessor),
+    ('classifier', LogisticRegression())
+])
+
+clf.fit(X, y)
+
+# Save model
+with open("ctr_model.pkl", "wb") as f:
+    pickle.dump(clf, f)
+
+print("✅ Model trained and saved to ctr_model.pkl")
