@@ -1,0 +1,18 @@
+import requests
+import random
+import time
+
+ad_categories = ["technology", "fashion", "automotive", "sports"]
+devices = ["mobile", "desktop", "tablet"]
+slots = ["top_banner", "sidebar", "inline"]
+
+for _ in range(20):
+    payload = {
+        "user_age": random.randint(18, 60),
+        "ad_category": random.choice(ad_categories),
+        "device_type": random.choice(devices),
+        "ad_slot": random.choice(slots),
+    }
+    response = requests.post("http://localhost:8000/predict", json=payload)
+    print(response.json())
+    time.sleep(0.5)
