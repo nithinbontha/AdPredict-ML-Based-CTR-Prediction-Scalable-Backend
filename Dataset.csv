@@ -1,0 +1,6 @@
+user_age,ad_category,device_type,ad_slot,label
+23,technology,mobile,top_banner,1
+45,fashion,desktop,sidebar,0
+32,automotive,mobile,inline,1
+28,technology,tablet,top_banner,0
+...
