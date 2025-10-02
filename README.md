@@ -29,3 +29,8 @@ It includes model training, feature engineering, and a production-grade FastAPI 
 - Add logging, monitoring, rate limiting  
 - Scale horizontally with autoscaling  
 - Integrate feedback loop to update model in production
+
+##Future Work
+- Swap with real CTR dataset (e.g., Criteo, Avazu)
+- Deploy with Docker + Gunicorn + NGINX
+- Redis for distributed caching
