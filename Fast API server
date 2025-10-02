@@ -1,0 +1,21 @@
+from fastapi import FastAPI, Request
+import pickle
+import pandas as pd
+from utils.feature_engineering import transform_input
+from utils.lru_cache import LRUCache
+
+model = pickle.load(open("ctr_model.pkl", "rb"))
+app = FastAPI()
+cache = LRUCache(capacity=1000)
+
+@app.post("/predict")
+async def predict(request: Request):
+    data = await request.json()
+    key = str(data)
+    if cache.get(key):
+        return {"predicted_ctr": cache.get(key)}
+
+    features = transform_input(data)
+    pred = model.predict_proba(features)[:, 1][0]
+    cache.put(key, pred)
+    return {"predicted_ctr": round(pred, 3)}
